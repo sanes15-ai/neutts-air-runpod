@@ -33,14 +33,18 @@ RUN CMAKE_ARGS="-DGGML_CUDA=on" pip3 install llama-cpp-python --force-reinstall 
 # Install PyTorch with CUDA (separate step for caching)
 RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
-# Install transformers with full audio support (HubertModel, Wav2Vec2, etc.)
-RUN pip3 install "transformers>=4.36.0" --no-cache-dir
-
 # Install core dependencies (separate step for caching)
 RUN pip3 install phonemizer librosa soundfile numpy scipy
 
-# Install additional packages (separate step for caching)
+# Install neucodec and perth FIRST (they bring their own transformers)
 RUN pip3 install perth neucodec onnxruntime-gpu
+
+# FORCE reinstall transformers AFTER neucodec to ensure HubertModel is available
+# neucodec requires HubertModel which needs transformers>=4.28
+RUN pip3 install --force-reinstall --no-cache-dir "transformers>=4.36.0"
+
+# Verify HubertModel is importable
+RUN python3 -c "from transformers import HubertModel; print('HubertModel import OK')"
 
 # Install web/API packages (separate step for caching)
 RUN pip3 install fastapi uvicorn websockets aiohttp
