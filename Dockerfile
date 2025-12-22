@@ -33,8 +33,11 @@ RUN CMAKE_ARGS="-DGGML_CUDA=on" pip3 install llama-cpp-python --force-reinstall 
 # Install PyTorch with CUDA (separate step for caching)
 RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
+# Install transformers with full audio support (HubertModel, Wav2Vec2, etc.)
+RUN pip3 install "transformers>=4.36.0" --no-cache-dir
+
 # Install core dependencies (separate step for caching)
-RUN pip3 install transformers phonemizer librosa soundfile numpy
+RUN pip3 install phonemizer librosa soundfile numpy scipy
 
 # Install additional packages (separate step for caching)
 RUN pip3 install perth neucodec onnxruntime-gpu

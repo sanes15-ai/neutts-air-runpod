@@ -10,8 +10,8 @@ import soundfile as sf
 import io
 
 # CONFIGURE YOUR ENDPOINT HERE
-RUNPOD_ENDPOINT_ID = "YOUR_ENDPOINT_ID"  # e.g., "abc123def456"
-RUNPOD_API_KEY = "YOUR_API_KEY"
+RUNPOD_ENDPOINT_ID = "umf1hkbm1kxo7i"  # Your deployed endpoint
+RUNPOD_API_KEY = "YOUR_API_KEY"  # Set via environment variable or paste here locally
 
 def test_tts(text: str, voice_id: str = "jo", streaming: bool = False):
     """
