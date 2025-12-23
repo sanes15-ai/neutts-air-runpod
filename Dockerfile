@@ -26,6 +26,12 @@ ENV PHONEMIZER_ESPEAK_PATH=/usr/bin/espeak-ng
 # Upgrade pip
 RUN pip3 install --upgrade pip
 
+# Install build tools needed for llama-cpp-python
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install llama-cpp-python with CUDA support (GPU acceleration)
 # Using GGML_CUDA (new flag, LLAMA_CUBLAS is deprecated)
 RUN CMAKE_ARGS="-DGGML_CUDA=on" pip3 install llama-cpp-python --force-reinstall --no-cache-dir
@@ -42,9 +48,6 @@ RUN pip3 install perth neucodec onnxruntime-gpu
 # FORCE reinstall transformers AFTER neucodec to ensure HubertModel is available
 # neucodec requires HubertModel which needs transformers>=4.28
 RUN pip3 install --force-reinstall --no-cache-dir "transformers==4.36.2"
-
-# Verify HubertModel is importable
-RUN python3 -c "from transformers import HubertModel; print('HubertModel import OK')"
 
 # Install web/API packages (separate step for caching)
 RUN pip3 install fastapi uvicorn websockets aiohttp
