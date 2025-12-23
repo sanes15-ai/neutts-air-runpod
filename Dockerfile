@@ -1,6 +1,6 @@
 # RunPod NeuTTS Air GPU Voice Agent
 # Real-time TTS with GPU acceleration
-FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
+FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -41,7 +41,7 @@ RUN pip3 install perth neucodec onnxruntime-gpu
 
 # FORCE reinstall transformers AFTER neucodec to ensure HubertModel is available
 # neucodec requires HubertModel which needs transformers>=4.28
-RUN pip3 install --force-reinstall --no-cache-dir "transformers>=4.36.0"
+RUN pip3 install --force-reinstall --no-cache-dir "transformers==4.36.2"
 
 # Verify HubertModel is importable
 RUN python3 -c "from transformers import HubertModel; print('HubertModel import OK')"
@@ -49,7 +49,7 @@ RUN python3 -c "from transformers import HubertModel; print('HubertModel import 
 # Install web/API packages (separate step for caching)
 RUN pip3 install fastapi uvicorn websockets aiohttp
 
-# Install HuggingFace and RunPod (separate step for caching)
+# Install HuggingFace and RunPod BEFORE downloading models (CRITICAL FIX)
 RUN pip3 install huggingface_hub runpod
 
 # Install audio package (can fail sometimes, separate)
@@ -60,10 +60,16 @@ WORKDIR /app
 RUN git clone https://github.com/neuphonic/neutts-air.git
 WORKDIR /app/neutts-air
 
+# Verify NeuTTS Air structure (NEW)
+RUN ls -la /app/neutts-air/ && echo "✓ NeuTTS Air cloned successfully"
+
 # Pre-download models to /models directory
 RUN mkdir -p /models
 RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download('neuphonic/neutts-air-q4-gguf', local_dir='/models/neutts-air-q4-gguf', local_dir_use_symlinks=False)"
 RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download('neuphonic/neucodec-onnx-decoder', local_dir='/models/neucodec-onnx-decoder', local_dir_use_symlinks=False)"
+
+# Verify models downloaded successfully (NEW)
+RUN ls -la /models/ && echo "✓ Models downloaded successfully"
 
 # Copy application code
 COPY handler.py /app/handler.py
