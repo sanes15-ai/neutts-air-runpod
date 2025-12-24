@@ -1,6 +1,7 @@
 # RunPod NeuTTS Air GPU Voice Agent
 # Real-time TTS with GPU acceleration
-FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
+# Using devel image for CUDA compilation tools needed by llama-cpp-python
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -26,14 +27,9 @@ ENV PHONEMIZER_ESPEAK_PATH=/usr/bin/espeak-ng
 # Upgrade pip
 RUN pip3 install --upgrade pip
 
-# Install build tools needed for llama-cpp-python
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
-    && rm -rf /var/lib/apt/lists/*
-
 # Install llama-cpp-python with CUDA support (GPU acceleration)
 # Using GGML_CUDA (new flag, LLAMA_CUBLAS is deprecated)
+# devel image already has cmake and build tools
 RUN CMAKE_ARGS="-DGGML_CUDA=on" pip3 install llama-cpp-python --force-reinstall --no-cache-dir
 
 # Install PyTorch with CUDA (separate step for caching)
