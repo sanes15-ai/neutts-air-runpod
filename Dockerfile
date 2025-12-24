@@ -1,6 +1,7 @@
 # RunPod NeuTTS Air GPU Voice Agent
 # Real-time TTS with GPU acceleration
 # Using devel image for CUDA compilation tools needed by llama-cpp-python
+# Build trigger: 2025-12-24
 FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
 
 # Set environment variables
