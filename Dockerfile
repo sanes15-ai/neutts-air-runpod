@@ -1,5 +1,7 @@
 # RunPod NeuTTS Air GPU Voice Agent
 # Real-time TTS with GPU acceleration
+# Using devel image for CUDA compilation tools needed by llama-cpp-python
+# Build trigger: 2025-12-24
 FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
 
 # Set environment variables
@@ -28,6 +30,7 @@ RUN pip3 install --upgrade pip
 
 # Install llama-cpp-python with CUDA support (GPU acceleration)
 # Using GGML_CUDA (new flag, LLAMA_CUBLAS is deprecated)
+# devel image already has cmake and build tools
 RUN CMAKE_ARGS="-DGGML_CUDA=on" pip3 install llama-cpp-python --force-reinstall --no-cache-dir
 
 # Install PyTorch with CUDA (separate step for caching)
@@ -39,17 +42,14 @@ RUN pip3 install phonemizer librosa soundfile numpy scipy
 # Install neucodec and perth FIRST (they bring their own transformers)
 RUN pip3 install perth neucodec onnxruntime-gpu
 
-# FORCE reinstall transformers AFTER neucodec to ensure HubertModel is available
-# neucodec requires HubertModel which needs transformers>=4.28
-RUN pip3 install --force-reinstall --no-cache-dir "transformers>=4.36.0"
-
-# Verify HubertModel is importable
-RUN python3 -c "from transformers import HubertModel; print('HubertModel import OK')"
+# FORCE reinstall transformers AFTER neucodec to ensure compatibility
+# neucodec requires Wav2Vec2BertModel which needs transformers>=4.39.0
+RUN pip3 install --force-reinstall --no-cache-dir "transformers==4.39.3"
 
 # Install web/API packages (separate step for caching)
 RUN pip3 install fastapi uvicorn websockets aiohttp
 
-# Install HuggingFace and RunPod (separate step for caching)
+# Install HuggingFace and RunPod BEFORE downloading models (CRITICAL FIX)
 RUN pip3 install huggingface_hub runpod
 
 # Install audio package (can fail sometimes, separate)
@@ -60,10 +60,16 @@ WORKDIR /app
 RUN git clone https://github.com/neuphonic/neutts-air.git
 WORKDIR /app/neutts-air
 
+# Verify NeuTTS Air structure (NEW)
+RUN ls -la /app/neutts-air/ && echo "✓ NeuTTS Air cloned successfully"
+
 # Pre-download models to /models directory
 RUN mkdir -p /models
 RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download('neuphonic/neutts-air-q4-gguf', local_dir='/models/neutts-air-q4-gguf', local_dir_use_symlinks=False)"
 RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download('neuphonic/neucodec-onnx-decoder', local_dir='/models/neucodec-onnx-decoder', local_dir_use_symlinks=False)"
+
+# Verify models downloaded successfully (NEW)
+RUN ls -la /models/ && echo "✓ Models downloaded successfully"
 
 # Copy application code
 COPY handler.py /app/handler.py

@@ -24,26 +24,33 @@ def load_tts_model():
     """Load NeuTTS Air model with GPU acceleration"""
     global tts
     
-    print("Loading NeuTTS Air with GPU acceleration...")
+    try:
+        print("Loading NeuTTS Air with GPU acceleration...")
+        
+        # Check if models are local files or HF repos
+        backbone_path = "/models/neutts-air-q4-gguf"
+        if not os.path.exists(backbone_path):
+            backbone_path = "neuphonic/neutts-air-q4-gguf"  # Fallback to HF
+        
+        codec_path = "/models/neucodec-onnx-decoder"
+        if not os.path.exists(codec_path):
+            codec_path = "neuphonic/neucodec-onnx-decoder"  # Fallback to HF
+        
+        tts = NeuTTSAir(
+            backbone_repo=backbone_path,  # Local or HF
+            backbone_device="gpu",  # GPU acceleration
+            codec_repo=codec_path,  # Local or HF
+            codec_device="cpu"  # ONNX only runs on CPU
+        )
+        
+        print("✓ NeuTTS Air loaded successfully on GPU!")
+        return tts
     
-    # Check if models are local files or HF repos
-    backbone_path = "/models/neutts-air-q4-gguf"
-    if not os.path.exists(backbone_path):
-        backbone_path = "neuphonic/neutts-air-q4-gguf"  # Fallback to HF
-    
-    codec_path = "/models/neucodec-onnx-decoder"
-    if not os.path.exists(codec_path):
-        codec_path = "neuphonic/neucodec-onnx-decoder"  # Fallback to HF
-    
-    tts = NeuTTSAir(
-        backbone_repo=backbone_path,  # Local or HF
-        backbone_device="gpu",  # GPU acceleration
-        codec_repo=codec_path,  # Local or HF
-        codec_device="cpu"  # ONNX only runs on CPU
-    )
-    
-    print("✓ NeuTTS Air loaded successfully on GPU!")
-    return tts
+    except Exception as e:
+        print(f"❌ ERROR loading TTS model: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise
 
 def encode_reference_voice(ref_audio_base64: str, voice_id: str):
     """

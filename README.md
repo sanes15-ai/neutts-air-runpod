@@ -57,7 +57,7 @@ docker push elexizai/agent:latest
    - **Name**: `neutts-air-tts`
    - **Container Image**: `YOUR_DOCKERHUB_USERNAME/neutts-air-gpu:latest`
    - **GPU Type**: RTX 4090 or A5000 (for speed)
-   - **Container Disk**: 20 GB
+   - **Container Disk**: 30 GB (devel image + models + dependencies require ~20GB minimum)
    - **Workers**: Auto-scale 0-5
    - **Max Workers**: 5
    - **Idle Timeout**: 5 seconds
