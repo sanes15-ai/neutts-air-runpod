@@ -141,10 +141,10 @@
         anticipatePin: 1,
         onUpdate(self) {
           document.getElementById("finishRail").style.height = self.progress * 100 + "%";
-          // phase color: magenta while raw, volt once sealed (footage shifts ~55%)
+          // phase color: signal red while inbound, volt once the car fills the bay
           finishStage.style.setProperty(
             "--phase",
-            self.progress > 0.55 ? "var(--volt)" : "var(--neon)"
+            self.progress > 0.55 ? "var(--volt)" : "var(--signal)"
           );
         },
       },

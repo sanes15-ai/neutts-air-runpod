@@ -21,18 +21,18 @@ enc() { # enc <in> <out> <height> <crf> [extra input args...]
 }
 
 enc "$RAW/33374863.mp4" assets/video/hero.mp4          720 28
-enc "$RAW/30391331.mp4" assets/video/showcase.mp4      720 28 -ss 2 -t 10
+enc "$RAW/8470710.mp4"  assets/video/showcase.mp4      720 28 -ss 0.5 -t 9
 enc "$RAW/16818471.mp4" assets/video/hover-ppf.mp4     540 30
 enc "$RAW/6159287.mp4"  assets/video/hover-wrap.mp4    540 30 -ss 0.5 -t 7
 enc "$RAW/6159290.mp4"  assets/video/hover-ceramic.mp4 540 30 -ss 4 -t 7
 
-# scroll-scrub sequence: 20s at 10fps = 200 frames, 1280w
-"$FF" -y -v error -ss 0.5 -t 20 -i "$RAW/8470710.mp4" \
-  -vf "fps=10,scale=1280:-2" -q:v 6 assets/frames/peel/finish_%04d.jpg
+# scroll-scrub sequence: Skyline rolls toward camera, 13.3s at 15fps = 200 frames
+"$FF" -y -v error -ss 0.2 -t 13.34 -i "$RAW/30391331.mp4" \
+  -vf "fps=15,scale=1280:-2" -q:v 6 assets/frames/peel/finish_%04d.jpg
 
 "$FF" -y -v error -ss 1  -i "$RAW/33374863.mp4" -frames:v 1 -vf scale=1280:-2 -q:v 4 assets/img/poster-hero.jpg
-"$FF" -y -v error -ss 3  -i "$RAW/30391331.mp4" -frames:v 1 -vf scale=1280:-2 -q:v 4 assets/img/poster-showcase.jpg
-"$FF" -y -v error -ss 18 -i "$RAW/8470710.mp4"  -frames:v 1 -vf scale=1280:-2 -q:v 4 assets/img/poster-finish.jpg
+"$FF" -y -v error -ss 18 -i "$RAW/8470710.mp4"  -frames:v 1 -vf scale=1280:-2 -q:v 4 assets/img/poster-showcase.jpg
+"$FF" -y -v error -ss 1  -i "$RAW/30391331.mp4" -frames:v 1 -vf scale=1280:-2 -q:v 4 assets/img/poster-finish.jpg
 
 rm -rf "$RAW"
 du -sh assets

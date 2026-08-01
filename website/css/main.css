@@ -272,8 +272,8 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   height: 100svh;
   overflow: clip;
-  /* accent swaps from magenta to volt as film "seals" — driven by JS */
-  --phase: var(--neon);
+  /* accent swaps from signal red to volt as the car "arrives" — driven by JS */
+  --phase: var(--signal);
 }
 .finish__canvas, .finish__poster {
   position: absolute; inset: 0;
