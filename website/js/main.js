@@ -141,11 +141,10 @@
         anticipatePin: 1,
         onUpdate(self) {
           document.getElementById("finishRail").style.height = self.progress * 100 + "%";
-          // phase color: signal red while inbound, volt once the car fills the bay
+          // phase accent follows the active one-word header
+          const colors = ["#FF2B33", "#FF2BD6", "#F2F2EC", "#D8FF3E"];
           finishStage.style.setProperty(
-            "--phase",
-            self.progress > 0.55 ? "var(--volt)" : "var(--signal)"
-          );
+            "--phase", colors[Math.min(3, Math.floor(self.progress * 4))]);
         },
       },
     });
@@ -158,16 +157,51 @@
       onUpdate: () => window.FinishScrub.draw(frameProxy.frame),
     }, 0);
 
-    /* Overlay choreography on the same 0..1 span */
+    /* One-word headers slam in per quarter of the scrub */
+    const words = gsap.utils.toArray("[data-word]");
+    words.forEach((w, i) => {
+      const w0 = i / words.length;
+      const w1 = (i + 1) / words.length;
+      finishTl.fromTo(w,
+        { opacity: 0, scale: 1.7, skewX: -14, yPercent: 8 },
+        { opacity: i === words.length - 1 ? 0.96 : 0.9, scale: 1, skewX: -4,
+          yPercent: 0, duration: 0.06, ease: "power3.out" }, w0 + 0.015);
+      finishTl.to(w, { letterSpacing: "0.035em", duration: (w1 - w0) - 0.09,
+                       ease: "none" }, w0 + 0.075);
+      if (i < words.length - 1) {
+        finishTl.to(w, { opacity: 0, yPercent: -35, scale: 0.92,
+                         duration: 0.045, ease: "power2.in" }, w1 - 0.045);
+      }
+    });
+
+    /* Speed-line streaks rush past, strongest mid-drift */
+    [["#speedlinesL", 1], ["#speedlinesR", -1]].forEach(([id, dir]) => {
+      finishTl.fromTo(id, { yPercent: 25 * dir }, { yPercent: -25 * dir, ease: "none", duration: 1 }, 0);
+      finishTl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.15 }, 0.08);
+      finishTl.to(id, { opacity: 0, duration: 0.15 }, 0.82);
+    });
+
+    /* Spec callouts between word transitions */
     finishTl
-      .to("#wordExposed", { opacity: 0, yPercent: -40, duration: 0.18 }, 0.42)
-      .fromTo("#wordArmored", { opacity: 0, yPercent: 40 }, { opacity: 0.9, yPercent: 0, duration: 0.18 }, 0.52)
-      .fromTo(".finish__callout--1", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.08 }, 0.18)
-      .to(".finish__callout--1", { opacity: 0, duration: 0.06 }, 0.42)
-      .fromTo(".finish__callout--2", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.08 }, 0.5)
-      .to(".finish__callout--2", { opacity: 0, duration: 0.06 }, 0.74)
-      .fromTo(".finish__callout--3", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.08 }, 0.8)
-      .to(".finish__hint", { opacity: 0, duration: 0.05 }, 0.08);
+      .fromTo(".finish__callout--1", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.06 }, 0.12)
+      .to(".finish__callout--1", { opacity: 0, duration: 0.05 }, 0.3)
+      .fromTo(".finish__callout--2", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.06 }, 0.38)
+      .to(".finish__callout--2", { opacity: 0, duration: 0.05 }, 0.58)
+      .fromTo(".finish__callout--3", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.06 }, 0.66)
+      .to(".finish__hint", { opacity: 0, duration: 0.04 }, 0.06);
+
+    /* Drift velocity readout: scroll speed -> km/h */
+    const kmhEl = document.getElementById("kmh");
+    if (kmhEl) {
+      let shown = 0;
+      gsap.ticker.add(() => {
+        const st = finishTl.scrollTrigger;
+        if (!st || !st.isActive) return;
+        const target = Math.min(280, Math.abs(lenis.velocity) * 4.2);
+        shown += (target - shown) * 0.12;
+        kmhEl.textContent = String(Math.round(shown)).padStart(3, "0");
+      });
+    }
 
     window.FinishScrub.draw(0);
   }

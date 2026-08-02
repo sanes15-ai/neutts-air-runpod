@@ -87,11 +87,16 @@
         <img class="finish__poster" src="assets/img/poster-finish.jpg" alt="Neon light reflecting off film-protected black bodywork">
         <div class="finish__vignette" aria-hidden="true"></div>
 
+        <div class="finish__speedlines finish__speedlines--l" id="speedlinesL"></div>
+        <div class="finish__speedlines finish__speedlines--r" id="speedlinesR"></div>
+
         <div class="finish__hud" aria-hidden="true">
-          <div class="finish__index mono">01 / THE FINISH</div>
+          <div class="finish__index mono">01 / THE STRESS TEST</div>
           <div class="finish__phase">
-            <span class="finish__word finish__word--a" id="wordExposed">Exposed</span>
-            <span class="finish__word finish__word--b" id="wordArmored">Armored</span>
+            <span class="finish__word" data-word style="--wc:#FF2B33">Speed</span>
+            <span class="finish__word" data-word style="--wc:#FF2BD6">Slide</span>
+            <span class="finish__word" data-word style="--wc:#F2F2EC">Smoke</span>
+            <span class="finish__word finish__word--fill" data-word style="--wc:#D8FF3E">Armored</span>
           </div>
           <div class="finish__callout finish__callout--1 mono" data-callout>
             <i></i>8.2 mil optical urethane
@@ -102,8 +107,12 @@
           <div class="finish__callout finish__callout--3 mono" data-callout>
             <i></i>Hydrophobic, edge-sealed
           </div>
+          <div class="finish__telemetry mono">
+            <span class="finish__tel-label">DRIFT VELOCITY</span>
+            <span class="finish__tel-value"><span id="kmh">000</span> km/h</span>
+          </div>
           <div class="finish__rail"><span id="finishRail"></span></div>
-          <div class="finish__hint mono">Scroll to seal the film</div>
+          <div class="finish__hint mono">Scroll to survive the drift</div>
         </div>
       </div>
     </section>
