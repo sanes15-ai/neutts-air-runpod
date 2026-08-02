@@ -1,0 +1,24 @@
+name: promptcut tests
+
+on:
+  push:
+    paths: ["promptcut/**", ".github/workflows/promptcut-tests.yml"]
+  pull_request:
+    paths: ["promptcut/**"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - name: Install promptcut
+        run: pip install -e ./promptcut
+      - name: Doctor
+        run: cd promptcut && promptcut doctor
+      - name: Unit + render tests
+        run: cd promptcut && python -m unittest discover tests -v

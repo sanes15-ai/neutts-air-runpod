@@ -36,7 +36,7 @@
         "in": 0.5,
         "out": 4.5,
         "transition_out": {
-          "type": "wipeleft",
+          "type": "circleclose",
           "duration": 0.6
         },
         "color": {

@@ -1,0 +1,10 @@
+services:
+  promptcut:
+    build: .
+    ports:
+      - "7859:7859"
+    volumes:
+      - ./project:/project        # your edit lives here (media/, project.json, render/)
+    environment:
+      - PROMPTCUT_TOKEN=${PROMPTCUT_TOKEN:?set PROMPTCUT_TOKEN in .env or the shell}
+    restart: unless-stopped

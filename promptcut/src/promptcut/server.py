@@ -14,10 +14,13 @@ Endpoints:
 
 import json
 import mimetypes
+import os
 import re
+import secrets
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 from . import captions as cap
 from . import compiler, ffmpeg as ff, looks
@@ -30,9 +33,44 @@ RENDER_LOCK = threading.Lock()
 def make_handler(root):
     root = Path(root)
 
+    token = os.environ.get("PROMPTCUT_TOKEN") or None
+
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, fmt, *a):
             pass
+
+        # ---------------- auth (enabled when PROMPTCUT_TOKEN is set)
+        def _authorized(self):
+            if not token:
+                return True
+            q = parse_qs(urlparse(self.path).query)
+            supplied = (q.get("token", [None])[0]
+                        or (self.headers.get("Authorization", "")
+                            .removeprefix("Bearer ").strip() or None))
+            cookie = self.headers.get("Cookie", "")
+            m = re.search(r"pc_token=([A-Za-z0-9_\-]+)", cookie)
+            if m and secrets.compare_digest(m.group(1), token):
+                return True
+            if supplied and secrets.compare_digest(supplied, token):
+                self._set_cookie = True
+                return True
+            return False
+
+        def _deny(self):
+            body = (b"401 \xe2\x80\x94 PromptCut is token-protected. "
+                    b"Open /?token=YOUR_TOKEN (see PROMPTCUT_TOKEN on the server).")
+            self.send_response(401)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def end_headers(self):
+            if getattr(self, "_set_cookie", False) and token:
+                self.send_header("Set-Cookie",
+                                 f"pc_token={token}; Path=/; HttpOnly; SameSite=Strict")
+                self._set_cookie = False
+            super().end_headers()
 
         # ---------------- helpers
         def _json(self, obj, code=200):
@@ -83,6 +121,8 @@ def make_handler(root):
 
         # ---------------- routes
         def do_HEAD(self):
+            if not self._authorized():
+                return self._deny()
             p = self.path.split("?")[0]
             target = None
             if p.startswith("/media/") or p.startswith("/render/"):
@@ -99,6 +139,8 @@ def make_handler(root):
                 self.end_headers()
 
         def do_GET(self):
+            if not self._authorized():
+                return self._deny()
             p = self.path.split("?")[0]
             try:
                 if p == "/" or p == "/index.html":
@@ -129,6 +171,8 @@ def make_handler(root):
                 return self._err(e, 500)
 
         def do_POST(self):
+            if not self._authorized():
+                return self._deny()
             p = self.path.split("?")[0]
             try:
                 if p == "/api/project":
@@ -159,7 +203,13 @@ def make_handler(root):
 def serve(root, host="127.0.0.1", port=7859):
     prj.load(root)  # fail fast if no project here
     httpd = ThreadingHTTPServer((host, port), make_handler(root))
-    print(f"PromptCut UI → http://{host}:{port}  (project: {root})")
+    tok = os.environ.get("PROMPTCUT_TOKEN")
+    url = f"http://{host}:{port}" + (f"/?token={tok}" if tok else "")
+    print(f"PromptCut UI → {url}  (project: {root})")
+    if host not in ("127.0.0.1", "localhost") and not tok:
+        print("WARNING: serving on a non-local interface without PROMPTCUT_TOKEN — "
+              "anyone who can reach this port can edit and render. "
+              "Set PROMPTCUT_TOKEN=<random string> to protect it.")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
