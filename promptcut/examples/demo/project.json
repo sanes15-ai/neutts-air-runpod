@@ -1,0 +1,174 @@
+{
+  "version": 1,
+  "name": "demo",
+  "settings": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "sample_rate": 48000,
+    "background": "black"
+  },
+  "assets": {
+    "a": {
+      "path": "media/scene_a.mp4"
+    },
+    "b": {
+      "path": "media/scene_b.mp4"
+    },
+    "c": {
+      "path": "media/scene_c.mp4"
+    },
+    "pip": {
+      "path": "media/pip.mp4"
+    },
+    "voice": {
+      "path": "media/voice.wav"
+    },
+    "music": {
+      "path": "media/music.wav"
+    }
+  },
+  "timeline": {
+    "video": [
+      {
+        "id": "c1",
+        "asset": "a",
+        "in": 0.5,
+        "out": 4.5,
+        "transition_out": {
+          "type": "wipeleft",
+          "duration": 0.6
+        },
+        "color": {
+          "look": "teal_orange",
+          "vignette": 0.4
+        },
+        "transform": {
+          "keyframes": [
+            {
+              "t": 0,
+              "zoom": 1
+            },
+            {
+              "t": 4,
+              "zoom": 1.18
+            }
+          ]
+        },
+        "fade_in": 0.4
+      },
+      {
+        "id": "c2",
+        "asset": "b",
+        "in": 0,
+        "out": 5,
+        "ramp": [
+          {
+            "from": 0,
+            "to": 2,
+            "speed": 1
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "speed": 0.4
+          },
+          {
+            "from": 3,
+            "to": 5,
+            "speed": 1.4
+          }
+        ],
+        "transition_out": {
+          "type": "circleopen",
+          "duration": 0.6
+        },
+        "color": {
+          "look": "vivid"
+        }
+      },
+      {
+        "id": "c3",
+        "asset": "c",
+        "in": 1,
+        "out": 5,
+        "speed": 1.2,
+        "color": {
+          "look": "noir",
+          "grain": 0.4
+        },
+        "fade_out": 0.6
+      }
+    ],
+    "overlays": [
+      {
+        "id": "o1",
+        "asset": "pip",
+        "start": 1,
+        "in": 0,
+        "out": 3,
+        "x": 0.94,
+        "y": 0.08,
+        "scale": 0.24,
+        "opacity": 0.95,
+        "fade_in": 0.3,
+        "fade_out": 0.3
+      }
+    ],
+    "texts": [
+      {
+        "id": "t1",
+        "text": "PROMPTCUT",
+        "start": 0.6,
+        "end": 3.2,
+        "style": {
+          "size": 92,
+          "color": "white",
+          "y": 0.5,
+          "border": 6
+        },
+        "fade": 0.4
+      },
+      {
+        "id": "t2",
+        "text": "edited by prompt",
+        "start": 3.4,
+        "end": 6,
+        "style": {
+          "size": 40,
+          "color": "0x3EFFD8",
+          "y": 0.62
+        },
+        "fade": 0.3
+      }
+    ],
+    "captions": {
+      "style": "pop",
+      "segments": [
+        {
+          "start": 6.5,
+          "end": 8.2,
+          "text": "cuts transitions ramps"
+        },
+        {
+          "start": 8.4,
+          "end": 10.4,
+          "text": "color looks and captions"
+        }
+      ]
+    },
+    "music": [
+      {
+        "id": "m1",
+        "asset": "music",
+        "start": 0,
+        "in": 0,
+        "out": null,
+        "volume": 0.5,
+        "fade_in": 0.8,
+        "fade_out": 1.5,
+        "duck": false
+      }
+    ]
+  }
+}
