@@ -39,8 +39,12 @@
           </select>
         </label>
         <label>Note style
-          <select id="optStyle"><option>SOAP</option><option>H&amp;P</option>
-            <option>Discharge summary</option></select>
+          <select id="optStyle">
+            <option>Psychiatric follow-up</option>
+            <option>Psychiatric intake</option>
+            <option>SOAP</option><option>H&amp;P</option>
+            <option>Discharge summary</option>
+          </select>
         </label>
       </div>
       <button id="btnGenerate" class="primary hidden">Generate note</button>
@@ -89,6 +93,15 @@
           <div class="card" data-copy="plan">
             <div class="card-head"><h3>P — Plan</h3><button class="copy">Copy</button></div>
             <textarea data-soap="plan"></textarea>
+          </div>
+          <div class="card hidden" id="mseCard" data-copy="mse">
+            <div class="card-head"><h3>Mental Status Exam</h3><button class="copy">Copy</button></div>
+            <textarea id="mseText" rows="10"></textarea>
+          </div>
+          <div class="card hidden" id="riskCard">
+            <div class="card-head"><h3>Risk assessment</h3>
+              <span class="risk-badge" id="riskBadge"></span></div>
+            <dl class="risk-list" id="riskList"></dl>
           </div>
           <div class="row-btns">
             <button id="btnCopyAll" class="primary">Copy full note</button>

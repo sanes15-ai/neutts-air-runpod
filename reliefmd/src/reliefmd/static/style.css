@@ -132,6 +132,17 @@ main { flex: 1; display: flex; min-height: 0; }
 .gaps li { padding-left: 20px; position: relative; font-size: 13px; color: var(--amber); }
 .gaps li::before { content: "⚠"; position: absolute; left: 0; }
 
+.risk-badge {
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+  padding: 3px 10px; border-radius: 999px; background: #E6F2EF; color: var(--teal-dark);
+}
+.risk-badge.moderate { background: #FDF3E0; color: var(--amber); }
+.risk-badge.high { background: #FDECEA; color: var(--red); }
+.risk-list { font-size: 13px; }
+.risk-list dt { color: var(--muted); font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.05em; margin-top: 8px; }
+.risk-list dd { margin: 1px 0 0; }
+
 .letter-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .letter-btns button {
   background: var(--paper); border: 1px solid var(--line); border-radius: 8px;

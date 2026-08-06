@@ -77,6 +77,53 @@ NOTE_SCHEMA = {
     "additionalProperties": False,
 }
 
+# Psychiatry note = base schema + Mental Status Exam + structured risk assessment
+_MSE_FIELDS = ["appearance", "behavior", "speech", "mood", "affect",
+               "thought_process", "thought_content", "perception",
+               "cognition", "insight_judgment"]
+
+PSYCH_SCHEMA = json.loads(json.dumps(NOTE_SCHEMA))
+PSYCH_SCHEMA["properties"]["mse"] = {
+    "type": "object",
+    "properties": {f: {"type": "string"} for f in _MSE_FIELDS},
+    "required": _MSE_FIELDS,
+    "additionalProperties": False,
+}
+PSYCH_SCHEMA["properties"]["risk"] = {
+    "type": "object",
+    "properties": {
+        "suicidal_ideation": {"type": "string"},
+        "homicidal_ideation": {"type": "string"},
+        "self_harm": {"type": "string"},
+        "level": {"type": "string", "enum": ["low", "moderate", "high",
+                                             "not assessed"]},
+        "safety_plan": {"type": "string"},
+    },
+    "required": ["suicidal_ideation", "homicidal_ideation", "self_harm",
+                 "level", "safety_plan"],
+    "additionalProperties": False,
+}
+PSYCH_SCHEMA["required"] = PSYCH_SCHEMA["required"] + ["mse", "risk"]
+
+PSYCH_RULES = """
+Additional rules for psychiatric documentation:
+- Mental Status Exam: document ONLY what is observable from the transcript \
+(speech pattern, expressed mood in the patient's own words in quotes, thought \
+content actually voiced). Where the recording gives no evidence for an MSE \
+domain, write "not assessed on recording" rather than a normal finding.
+- Risk assessment: quote or closely paraphrase what the patient actually said \
+about suicidal ideation, homicidal ideation, and self-harm. Never soften or \
+upgrade risk beyond the transcript. If risk was not explored, say so in the \
+risk fields AND list it under gaps — that is a critical omission.
+- Use psychotherapy/E&M CPT codes appropriate to what actually happened \
+(e.g. 90791 intake, 90833/90836 add-on therapy, 99212-99215 med management).
+- The patient handout should be gentle, stigma-free, and include crisis \
+resources placeholder "[local crisis line]" in the warning-signs section."""
+
+
+def _is_psych(style: str) -> bool:
+    return "psych" in (style or "").lower()
+
 LETTER_TYPES = {
     "referral": "a referral letter to a specialist colleague, professional tone, "
                 "including reason for referral, relevant history, findings, current "
@@ -124,15 +171,19 @@ Return the JSON exactly matching the required schema."""
 def generate_note(transcript, style="SOAP", language="English",
                   reading_level="6th grade"):
     b = backend()
+    psych = _is_psych(style)
+    schema = PSYCH_SCHEMA if psych else NOTE_SCHEMA
     prompt = _note_prompt(transcript, style, language, reading_level)
+    if psych:
+        prompt += PSYCH_RULES
     if b == "mock":
-        return _mock_note()
+        return _mock_note(psych)
     if b == "claude-cli":
         raw = _claude_cli(SYSTEM, prompt + "\n\nReturn ONLY the JSON object, no "
                           "markdown fences, matching this JSON schema:\n"
-                          + json.dumps(NOTE_SCHEMA))
+                          + json.dumps(schema))
         return _parse_json(raw)
-    return _anthropic_json(prompt)
+    return _anthropic_json(prompt, schema)
 
 
 def generate_letter(transcript, note, letter_type, instructions=""):
@@ -176,7 +227,7 @@ def _check_refusal(response):
         raise NoteGenError("The model declined this request" + detail)
 
 
-def _anthropic_json(prompt):
+def _anthropic_json(prompt, schema=NOTE_SCHEMA):
     import anthropic
     try:
         response = _client().messages.create(
@@ -184,7 +235,7 @@ def _anthropic_json(prompt):
             max_tokens=16000,
             system=[{"type": "text", "text": SYSTEM,
                      "cache_control": {"type": "ephemeral"}}],
-            output_config={"format": {"type": "json_schema", "schema": NOTE_SCHEMA}},
+            output_config={"format": {"type": "json_schema", "schema": schema}},
             messages=[{"role": "user", "content": prompt}],
         )
     except anthropic.AuthenticationError as e:
@@ -242,7 +293,18 @@ def _parse_json(raw):
     return json.loads(raw[start:end + 1])
 
 
-def _mock_note():
+def _mock_note(psych=False):
+    note = _mock_note_base()
+    if psych:
+        note["mse"] = {f: "not assessed on recording" for f in _MSE_FIELDS}
+        note["mse"]["mood"] = '"okay, I guess" (patient\'s words)'
+        note["risk"] = {"suicidal_ideation": "Denied", "homicidal_ideation": "Denied",
+                        "self_harm": "Denied", "level": "low",
+                        "safety_plan": "Reviewed crisis line contact."}
+    return note
+
+
+def _mock_note_base():
     return {
         "soap": {
             "subjective": "3 days of sore throat, fever, odynophagia. No cough or "

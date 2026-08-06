@@ -126,6 +126,34 @@ function renderVisit(v) {
       .map((f) => `<li>${f}</li>`).join("");
   $("gaps").innerHTML = (v.note.gaps || []).map((g) => `<li>${g}</li>`).join("");
   $("gapsWrap").style.display = (v.note.gaps || []).length ? "" : "none";
+  const MSE_LABELS = {
+    appearance: "Appearance", behavior: "Behavior", speech: "Speech",
+    mood: "Mood", affect: "Affect", thought_process: "Thought process",
+    thought_content: "Thought content", perception: "Perception",
+    cognition: "Cognition", insight_judgment: "Insight/Judgment",
+  };
+  if (v.note.mse) {
+    $("mseCard").classList.remove("hidden");
+    $("mseText").value = Object.entries(MSE_LABELS)
+      .map(([k, label]) => `${label}: ${v.note.mse[k] || "—"}`).join("\n");
+    autosize($("mseText"));
+  } else {
+    $("mseCard").classList.add("hidden");
+  }
+  if (v.note.risk) {
+    $("riskCard").classList.remove("hidden");
+    const badge = $("riskBadge");
+    badge.textContent = v.note.risk.level + " risk";
+    badge.className = "risk-badge " + v.note.risk.level.replace(" ", "-");
+    $("riskList").innerHTML = [
+      ["Suicidal ideation", v.note.risk.suicidal_ideation],
+      ["Homicidal ideation", v.note.risk.homicidal_ideation],
+      ["Self-harm", v.note.risk.self_harm],
+      ["Safety plan", v.note.risk.safety_plan],
+    ].map(([k, val]) => `<dt>${k}</dt><dd>${val || "—"}</dd>`).join("");
+  } else {
+    $("riskCard").classList.add("hidden");
+  }
   $("handout").value = v.note.patient_handout;
   autosize($("handout"));
   $("transcriptText").textContent = v.transcript.text;
