@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PromptCut</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Cpath d=%27M4 6h24v4H4zm0 8h16v4H4zm0 8h20v4H4z%27 fill=%27%233EFFD8%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="bar">
+  <div class="logo">PROMPT<span>CUT</span></div>
+  <div class="bar-actions">
+    <span id="projName" class="muted"></span>
+    <span id="projDur" class="muted"></span>
+    <button id="btnSave">Save</button>
+    <button id="btnPreview" class="accent">Render preview</button>
+    <button id="btnFinal">Render final</button>
+  </div>
+</header>
+
+<main>
+  <section class="left">
+    <div class="player">
+      <video id="player" controls playsinline></video>
+      <div id="renderMsg" class="render-msg">No render yet — press <b>Render preview</b>.</div>
+    </div>
+    <div class="timeline-wrap">
+      <div class="tl-head">
+        <span>Timeline</span>
+        <span class="muted" id="tlHint">click a clip to edit it</span>
+      </div>
+      <div id="trackVideo" class="track"></div>
+      <div id="trackText" class="track thin"></div>
+      <div id="trackMusic" class="track thin"></div>
+    </div>
+  </section>
+
+  <aside class="inspector">
+    <h2 id="insTitle">Nothing selected</h2>
+    <div id="insBody"></div>
+    <div class="ins-footer">
+      <h3>Assets</h3>
+      <div id="assetList" class="assets"></div>
+      <p class="muted small">Add media from a terminal: <code>promptcut add file.mp4</code>.
+      Everything here edits <code>project.json</code> — Claude Code can edit the same
+      file by prompt.</p>
+    </div>
+  </aside>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

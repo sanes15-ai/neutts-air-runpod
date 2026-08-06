@@ -1,0 +1,8 @@
+__pycache__/
+*.egg-info/
+.cache/
+render/
+examples/demo/media/
+examples/demo/render/
+examples/demo/.cache/
+.ffmpeg/

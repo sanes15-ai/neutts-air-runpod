@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VANTA//APEX — Paint Protection at Full Throttle</title>
+  <meta name="description" content="Race-bred paint protection film, wraps & ceramic — applied at the apex of precision.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Cpath d=%27M6 4h8L26 16 14 28H6l12-12z%27 fill=%27%23D8FF3E%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <!-- S0 · Preloader -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <div class="preloader__logo">VANTA<span class="slash">//</span>APEX</div>
+      <div class="preloader__count"><span id="preCount">000</span><span class="preloader__unit">%</span></div>
+      <div class="preloader__bar"><span id="preBar"></span></div>
+    </div>
+    <div class="preloader__curtain preloader__curtain--volt"></div>
+    <div class="preloader__curtain preloader__curtain--carbon"></div>
+  </div>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"><span id="cursorLabel"></span></div>
+
+  <!-- Nav -->
+  <header class="nav" id="nav">
+    <a class="nav__logo" href="#top" data-cursor="link">VANTA<span class="slash">//</span>APEX</a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#finish" class="nav__link" data-cursor="link"><span data-roll="The Finish">The Finish</span></a>
+      <a href="#services" class="nav__link" data-cursor="link"><span data-roll="Services">Services</span></a>
+      <a href="#process" class="nav__link" data-cursor="link"><span data-roll="Process">Process</span></a>
+    </nav>
+    <a href="#book" class="nav__cta" data-cursor="link" data-magnetic>Book <span class="chev">///</span></a>
+  </header>
+
+  <main id="top">
+
+    <!-- S1 · Hero -->
+    <section class="hero" id="hero">
+      <div class="hero__media">
+        <video class="hero__video" src="assets/video/hero.mp4" poster="assets/img/poster-hero.jpg"
+               autoplay muted loop playsinline aria-hidden="true"></video>
+        <div class="hero__shade"></div>
+      </div>
+      <div class="hero__frame" aria-hidden="true"></div>
+      <div class="hero__content">
+        <p class="hero__kicker mono" data-hero-fade>PPF · WRAP · CERAMIC — APEX DIVISION</p>
+        <h1 class="hero__title" id="heroTitle">
+          <span class="hero__line">Protection</span>
+          <span class="hero__line">at full</span>
+          <span class="hero__line">throttle<span class="volt-dot">.</span></span>
+        </h1>
+        <p class="hero__sub" data-hero-fade>Race-bred paint protection film, wraps &amp; ceramic —<br>applied at the apex of precision.</p>
+        <div class="hero__actions" data-hero-fade>
+          <a class="btn btn--volt" href="#book" data-cursor="link" data-magnetic>Book your build</a>
+          <a class="btn btn--ghost" href="#finish" data-cursor="link">See the finish</a>
+        </div>
+      </div>
+      <div class="hero__cue mono" data-hero-fade aria-hidden="true"><span class="hero__cue-chev">‹</span> scroll</div>
+      <div class="hero__index mono" aria-hidden="true">00 / IGNITION</div>
+    </section>
+
+    <!-- S2 · Velocity marquee -->
+    <section class="marquee" aria-hidden="true">
+      <div class="marquee__band marquee__band--volt">
+        <div class="marquee__track" id="marqueeA">
+          <span>Paint protection film /// Full-body wrap /// Ceramic coat /// Stone-chip armor /// Self-healing topcoat ///&nbsp;</span>
+          <span>Paint protection film /// Full-body wrap /// Ceramic coat /// Stone-chip armor /// Self-healing topcoat ///&nbsp;</span>
+        </div>
+      </div>
+      <div class="marquee__band marquee__band--dark">
+        <div class="marquee__track" id="marqueeB">
+          <span>10-year warranty — 8.2 mil urethane — hydrophobic finish — plotter-cut edges — 48 hr turnaround —&nbsp;</span>
+          <span>10-year warranty — 8.2 mil urethane — hydrophobic finish — plotter-cut edges — 48 hr turnaround —&nbsp;</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- S3 · THE FINISH — scroll-scrubbed film -->
+    <section class="finish" id="finish">
+      <div class="finish__stage">
+        <canvas class="finish__canvas" id="finishCanvas" aria-label="Close-up of paint protection film gloss shifting under neon light as you scroll"></canvas>
+        <img class="finish__poster" src="assets/img/poster-finish.jpg" alt="Neon light reflecting off film-protected black bodywork">
+        <div class="finish__vignette" aria-hidden="true"></div>
+
+        <div class="finish__speedlines finish__speedlines--l" id="speedlinesL"></div>
+        <div class="finish__speedlines finish__speedlines--r" id="speedlinesR"></div>
+
+        <div class="finish__hud" aria-hidden="true">
+          <div class="finish__index mono">01 / THE STRESS TEST</div>
+          <div class="finish__phase">
+            <span class="finish__word" data-word style="--wc:#FF2B33">Speed</span>
+            <span class="finish__word" data-word style="--wc:#FF2BD6">Slide</span>
+            <span class="finish__word" data-word style="--wc:#F2F2EC">Smoke</span>
+            <span class="finish__word finish__word--fill" data-word style="--wc:#D8FF3E">Armored</span>
+          </div>
+          <div class="finish__callout finish__callout--1 mono" data-callout>
+            <i></i>8.2 mil optical urethane
+          </div>
+          <div class="finish__callout finish__callout--2 mono" data-callout>
+            <i></i>Self-healing topcoat
+          </div>
+          <div class="finish__callout finish__callout--3 mono" data-callout>
+            <i></i>Hydrophobic, edge-sealed
+          </div>
+          <div class="finish__telemetry mono">
+            <span class="finish__tel-label">DRIFT VELOCITY</span>
+            <span class="finish__tel-value"><span id="kmh">000</span> km/h</span>
+          </div>
+          <div class="finish__rail"><span id="finishRail"></span></div>
+          <div class="finish__hint mono">Scroll to survive the drift</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S4 · Services -->
+    <section class="services" id="services">
+      <div class="services__head">
+        <p class="eyebrow mono" data-reveal>02 / SERVICES</p>
+        <h2 class="services__title" id="servicesTitle">Built for the obsessed</h2>
+      </div>
+      <div class="services__grid">
+        <article class="card card--ppf" data-card data-cursor="play">
+          <video class="card__video" src="assets/video/hover-ppf.mp4" muted loop playsinline preload="metadata"></video>
+          <div class="card__body">
+            <p class="card__num mono">01</p>
+            <h3 class="card__title">PPF</h3>
+            <p class="card__desc">Stone-chip armor for the panels that take the hits. Plotter-cut, edge-wrapped, invisible at a hand's distance.</p>
+            <ul class="card__specs mono">
+              <li>Full front / track pack / full body</li>
+              <li>Self-healing gloss or stealth matte</li>
+              <li>10-year film warranty</li>
+            </ul>
+          </div>
+          <span class="card__arrow" data-magnetic aria-hidden="true">→</span>
+        </article>
+        <article class="card card--wrap" data-card data-cursor="play">
+          <video class="card__video" src="assets/video/hover-wrap.mp4" muted loop playsinline preload="metadata"></video>
+          <div class="card__body">
+            <p class="card__num mono">02</p>
+            <h3 class="card__title">Wrap</h3>
+            <p class="card__desc">A new color without touching the paint. Seam-planned around every body line, tucked on every edge.</p>
+            <ul class="card__specs mono">
+              <li>Color change / commercial livery</li>
+              <li>Gloss, satin, matte &amp; PPF-topped color</li>
+              <li>Reversible — resale-safe</li>
+            </ul>
+          </div>
+          <span class="card__arrow" data-magnetic aria-hidden="true">→</span>
+        </article>
+        <article class="card card--ceramic" data-card data-cursor="play">
+          <video class="card__video" src="assets/video/hover-ceramic.mp4" muted loop playsinline preload="metadata"></video>
+          <div class="card__body">
+            <p class="card__num mono">03</p>
+            <h3 class="card__title">Ceramic</h3>
+            <p class="card__desc">Machine-corrected paint locked under a 9H ceramic layer. Water beads, grime slides, gloss stays.</p>
+            <ul class="card__specs mono">
+              <li>Single-stage correction included</li>
+              <li>Applied over paint or film</li>
+              <li>Annual top-up program</li>
+            </ul>
+          </div>
+          <span class="card__arrow" data-magnetic aria-hidden="true">→</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- S5 · Process — horizontal pin -->
+    <section class="process" id="process">
+      <div class="process__pin">
+        <div class="process__head">
+          <p class="eyebrow mono">03 / PROCESS</p>
+          <div class="process__telemetry"><span id="telemetryBar"></span></div>
+        </div>
+        <div class="process__track" id="processTrack">
+          <article class="panel">
+            <span class="panel__num" aria-hidden="true">01</span>
+            <h3 class="panel__title">Scan &amp; template</h3>
+            <p class="panel__desc">Your exact body kit is scanned and matched against our pattern library — no film ever meets a blade on your paint.</p>
+          </article>
+          <article class="panel">
+            <span class="panel__num" aria-hidden="true">02</span>
+            <h3 class="panel__title">Plotter-cut</h3>
+            <p class="panel__desc">Every piece is machine-cut to the millimeter, with relief cuts planned for vents, sensors and badges.</p>
+          </article>
+          <article class="panel">
+            <span class="panel__num" aria-hidden="true">03</span>
+            <h3 class="panel__title">Apply at the apex</h3>
+            <p class="panel__desc">Slip solution, squeegee, heat. Film is stretched through the curves the way a driver takes them — once, cleanly.</p>
+          </article>
+          <article class="panel">
+            <span class="panel__num" aria-hidden="true">04</span>
+            <h3 class="panel__title">Cure &amp; inspect</h3>
+            <p class="panel__desc">48 hours in a dust-controlled bay, then a light-tunnel inspection of every edge before handover.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- S6 · Numbers -->
+    <section class="numbers" id="numbers">
+      <p class="eyebrow eyebrow--dark mono" data-reveal>04 / PROOF</p>
+      <div class="numbers__grid">
+        <div class="stat" data-stat>
+          <span class="stat__value"><span class="stat__count" data-count="1400">0</span>+</span>
+          <span class="stat__label mono">Cars armored</span>
+        </div>
+        <div class="stat" data-stat>
+          <span class="stat__value"><span class="stat__count" data-count="10">0</span> yr</span>
+          <span class="stat__label mono">Film warranty</span>
+        </div>
+        <div class="stat" data-stat>
+          <span class="stat__value"><span class="stat__count" data-count="82" data-decimal="1">0</span> mil</span>
+          <span class="stat__label mono">Film gauge</span>
+        </div>
+        <div class="stat" data-stat>
+          <span class="stat__value"><span class="stat__count" data-count="48">0</span> hr</span>
+          <span class="stat__label mono">Turnaround</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- S7 · Showcase -->
+    <section class="showcase" id="showcase">
+      <div class="showcase__window" id="showcaseWindow">
+        <video class="showcase__video" id="showcaseVideo" src="assets/video/showcase.mp4" poster="assets/img/poster-showcase.jpg"
+               autoplay muted loop playsinline aria-hidden="true"></video>
+        <div class="showcase__shade"></div>
+        <figure class="showcase__quote">
+          <blockquote id="quoteText">&ldquo;They wrapped the R32 on a Tuesday. By the weekend it shrugged off a gravel road that would have cost me a respray.&rdquo;</blockquote>
+          <figcaption class="mono">— R. Tanaka · GT Owners Club</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- S8 · CTA -->
+    <section class="cta" id="book">
+      <div class="cta__stripes" aria-hidden="true"></div>
+      <h2 class="cta__title" id="ctaTitle"><span class="cta__line">Ready to</span> <span class="cta__line">armor up?</span></h2>
+      <a class="btn btn--volt btn--xl" href="mailto:pit@vantaapex.example" data-cursor="link" data-magnetic>
+        <span class="btn__text">Book your build</span> <span class="chev">///</span>
+      </a>
+      <p class="cta__meta mono">Pit lane opens Tue–Sat · 08:00–18:00 · Apex Division HQ</p>
+    </section>
+
+  </main>
+
+  <!-- S9 · Footer -->
+  <footer class="footer">
+    <div class="footer__logo" id="footerLogo" aria-hidden="true">VANTA//APEX</div>
+    <div class="footer__cols">
+      <div class="footer__col">
+        <p class="footer__head mono">Studio</p>
+        <a href="#finish" data-cursor="link">The Finish</a>
+        <a href="#services" data-cursor="link">Services</a>
+        <a href="#process" data-cursor="link">Process</a>
+      </div>
+      <div class="footer__col">
+        <p class="footer__head mono">Contact</p>
+        <a href="mailto:pit@vantaapex.example" data-cursor="link">pit@vantaapex.example</a>
+        <a href="#book" data-cursor="link">Book a bay</a>
+      </div>
+      <div class="footer__col">
+        <p class="footer__head mono">Footage</p>
+        <a href="https://www.pexels.com" target="_blank" rel="noopener" data-cursor="link">Stock film via Pexels</a>
+        <span class="footer__fine">Free license · credited in assets/CREDITS.md</span>
+      </div>
+    </div>
+    <p class="footer__ticker mono" aria-hidden="true">VANTA//APEX — a fictional demonstration brand — protection at full throttle — built with GSAP + Lenis —&nbsp;</p>
+  </footer>
+
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="vendor/SplitText.min.js"></script>
+  <script src="vendor/lenis.min.js"></script>
+  <script src="js/scrub.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
