@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReliefMD — your visit scribe</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect x=%274%27 y=%274%27 width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%23127A6D%27/%3E%3Cpath d=%27M10 16h4l2-5 3 10 2-5h1%27 stroke=%27white%27 stroke-width=%272.4%27 fill=%27none%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">Relief<span>MD</span></div>
+  <div class="top-status" id="statusLine">…</div>
+</header>
+
+<main>
+  <aside class="panel left">
+    <section class="recorder">
+      <h2>New visit</h2>
+      <input id="patientLabel" placeholder="Visit label (e.g. Room 3 — sore throat)" autocomplete="off">
+      <div class="rec-row">
+        <button id="btnRecord" class="rec-btn" title="Record the visit">
+          <span class="rec-dot"></span><span id="recLabel">Record visit</span>
+        </button>
+        <span id="recTimer" class="rec-timer"></span>
+      </div>
+      <div class="alt-row">
+        <label class="filelab">Upload audio<input id="fileInput" type="file" accept="audio/*" hidden></label>
+        <button id="btnPasteToggle" class="link-btn">Paste / type transcript</button>
+      </div>
+      <textarea id="pasteBox" class="hidden" rows="6"
+        placeholder="Paste a transcript or dictate your note here, then Generate…"></textarea>
+      <div class="opts">
+        <label>Handout language
+          <select id="optLanguage">
+            <option>English</option><option>Spanish</option><option>Urdu</option>
+            <option>Hindi</option><option>Arabic</option><option>French</option>
+            <option>Portuguese</option><option>German</option>
+          </select>
+        </label>
+        <label>Note style
+          <select id="optStyle"><option>SOAP</option><option>H&amp;P</option>
+            <option>Discharge summary</option></select>
+        </label>
+      </div>
+      <button id="btnGenerate" class="primary hidden">Generate note</button>
+      <div id="busy" class="busy hidden"><span class="spin"></span><span id="busyText">Working…</span></div>
+      <div id="errBox" class="err hidden"></div>
+    </section>
+
+    <section class="history">
+      <h2>Recent visits</h2>
+      <div id="visitList" class="visit-list"></div>
+    </section>
+
+    <p class="fine">ReliefMD assists with documentation. It is not a medical
+    device — review and edit everything before it enters the record. Audio is
+    discarded after transcription by default.</p>
+  </aside>
+
+  <section class="panel main" id="resultPanel">
+    <div class="empty" id="emptyState">
+      <div class="empty-art">🩺</div>
+      <h1>The scribe that gives you your evenings back</h1>
+      <p>Record the visit. Review the note. Copy it into your EHR.<br>
+         Handout for the patient, letters on demand — one recording, everything done.</p>
+    </div>
+
+    <div id="noteView" class="hidden">
+      <div class="note-head">
+        <h1 id="noteTitle"></h1>
+        <span class="mono" id="noteMeta"></span>
+      </div>
+
+      <div class="grid">
+        <div class="col">
+          <div class="card" data-copy="subjective">
+            <div class="card-head"><h3>S — Subjective</h3><button class="copy">Copy</button></div>
+            <textarea data-soap="subjective"></textarea>
+          </div>
+          <div class="card" data-copy="objective">
+            <div class="card-head"><h3>O — Objective</h3><button class="copy">Copy</button></div>
+            <textarea data-soap="objective"></textarea>
+          </div>
+          <div class="card" data-copy="assessment">
+            <div class="card-head"><h3>A — Assessment</h3><button class="copy">Copy</button></div>
+            <textarea data-soap="assessment"></textarea>
+          </div>
+          <div class="card" data-copy="plan">
+            <div class="card-head"><h3>P — Plan</h3><button class="copy">Copy</button></div>
+            <textarea data-soap="plan"></textarea>
+          </div>
+          <div class="row-btns">
+            <button id="btnCopyAll" class="primary">Copy full note</button>
+            <button id="btnSaveEdits">Save edits</button>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><h3>Suggested codes</h3></div>
+            <div id="codes"></div>
+            <p class="fine">Suggestions only — verify before billing.</p>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Don't miss</h3></div>
+            <ul id="followups" class="ticks"></ul>
+            <div id="gapsWrap"><h4>Gaps in the recording</h4><ul id="gaps" class="gaps"></ul></div>
+          </div>
+          <div class="card" data-copy-handout>
+            <div class="card-head"><h3>Patient handout</h3><button class="copy" id="copyHandout">Copy</button></div>
+            <textarea id="handout" rows="12"></textarea>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Letters from the doctor</h3></div>
+            <div class="letter-btns">
+              <button data-letter="referral">Referral letter</button>
+              <button data-letter="sick_note">Sick note</button>
+              <button data-letter="insurance">Insurance letter</button>
+              <button data-letter="patient_followup">Patient follow-up</button>
+            </div>
+            <div id="letterOut" class="hidden">
+              <div class="card-head"><h4 id="letterTitle"></h4><button class="copy" id="copyLetter">Copy</button></div>
+              <textarea id="letterText" rows="12"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <details class="transcript">
+        <summary>Visit transcript</summary>
+        <pre id="transcriptText"></pre>
+      </details>
+    </div>
+  </section>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reliefmd"
+version = "0.1.0"
+description = "AI visit scribe for clinicians: record a visit, get a SOAP note, codes, a patient handout, and doctor letters."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "anthropic>=0.120",
+    "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+local-transcribe = ["faster-whisper>=1.0"]
+
+[project.scripts]
+reliefmd = "reliefmd.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+reliefmd = ["static/*"]
