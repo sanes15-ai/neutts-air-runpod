@@ -1,0 +1,20 @@
+{
+  "trade_size_sol": 0.1,
+  "min_profit_pct": 0.003,
+  "slippage_bps": 50,
+  "priority_fee_lamports": 100000,
+  "tip_lamports": 0,
+  "landing_rate": 0.6,
+  "poll_interval": 3.0,
+  "dry_run": true,
+  "max_live_trade_size_sol": 0.25,
+  "max_session_loss_sol": 0.05,
+  "ledger_path": "arb_ledger.jsonl",
+  "tokens": [
+    { "symbol": "USDC", "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", "decimals": 6 },
+    { "symbol": "USDT", "mint": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", "decimals": 6 },
+    { "symbol": "JUP",  "mint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",  "decimals": 6 },
+    { "symbol": "BONK", "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", "decimals": 5 },
+    { "symbol": "JitoSOL", "mint": "J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn", "decimals": 9 }
+  ]
+}
