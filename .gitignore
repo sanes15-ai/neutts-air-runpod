@@ -25,3 +25,6 @@ reference_audio/
 # arbitrage bot ledgers
 arb_ledger.jsonl
 *.jsonl
+
+# research caches
+trading_bot/cache/
