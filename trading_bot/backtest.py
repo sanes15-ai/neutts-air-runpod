@@ -106,8 +106,15 @@ def run(
     atr_period: int = 14,
     slippage: float = 0.0,
     max_bars: int | None = None,
+    fixed_size: float | None = None,
 ) -> Result:
     """Backtest a target-position series.
+
+    If `fixed_size` is given (in units -- 100_000 is one standard FX lot), every
+    trade uses that size regardless of equity or volatility. This is how most
+    retail accounts are actually traded, and modelling it is the fastest way to
+    see why they do not survive: a fixed lot risks a fixed *number of pips*,
+    which becomes an unbounded fraction of a shrinking account.
 
     `signal` holds the desired position (-1 short, 0 flat, +1 long) as decided
     at each bar's close; execution happens at the next bar's open.
@@ -150,6 +157,12 @@ def run(
         position, size = 0, 0.0
 
     for i in range(1, len(df)):
+        # A margin call ends the account. Without this the simulation happily
+        # "recovers" from negative equity, which no real broker permits.
+        if equity <= 0:
+            equity_curve[i:] = 0.0
+            break
+
         # --- manage an open position inside this bar, before any new signal ---
         if position != 0:
             hit_stop = low[i] <= stop if position > 0 else high[i] >= stop
@@ -169,7 +182,11 @@ def run(
             stop_distance = stop_atr_mult * atr_values[i - 1]
             if stop_distance > 0:
                 # Risk a fixed fraction of equity: size = risk$ / stop distance.
-                size = (equity * risk_per_trade) / stop_distance
+                size = (
+                    fixed_size
+                    if fixed_size is not None
+                    else (equity * risk_per_trade) / stop_distance
+                )
                 position = desired
                 entry_price = open_[i]
                 entry_index = i

@@ -30,10 +30,27 @@ from .indicators import atr
 
 log = logging.getLogger("trading_bot.mt5")
 
-#: The validated trio: two mean-reversion strategies (negatively correlated
-#: with trend) plus one momentum strategy. Selected on out-of-sample data by
-#: return-per-drawdown, not by raw return.
-DEFAULT_STRATEGIES = ["keltner_revert", "rsi7_revert_25_75", "roc_momentum_20"]
+#: Validated strategy sets, per market. These differ because the markets differ:
+#: FX ranges and mean-reverts, so reversion strategies win there; crypto trends
+#: hard, so breakout strategies win. Using the FX set on BTC (or vice versa)
+#: throws away most of the edge.
+STRATEGY_SETS = {
+    # Out-of-sample on BTC: Sharpe 1.29, and positive through both the 2018 and
+    # 2022 bear markets because it takes short positions rather than only long.
+    "crypto": ["keltner_breakout", "adx_filtered_ema", "new_high_20"],
+    # Out-of-sample on EURUSD: Sharpe 1.23. Two mean-reversion strategies that
+    # are negatively correlated with the momentum one.
+    "fx": ["keltner_revert", "rsi7_revert_25_75", "roc_momentum_20"],
+}
+
+DEFAULT_STRATEGIES = STRATEGY_SETS["crypto"]
+
+
+def strategies_for(symbol: str) -> list[str]:
+    """Pick the validated strategy set matching the instrument's character."""
+    upper = symbol.upper()
+    is_crypto = any(token in upper for token in ("BTC", "ETH", "XRP", "SOL", "LTC", "DOGE"))
+    return list(STRATEGY_SETS["crypto" if is_crypto else "fx"])
 
 
 class SafetyError(RuntimeError):
@@ -44,7 +61,7 @@ class SafetyError(RuntimeError):
 class BotConfig:
     symbol: str = "EURUSD"
     timeframe: str = "D1"
-    strategies: tuple[str, ...] = tuple(DEFAULT_STRATEGIES)
+    strategies: tuple[str, ...] = ()   # empty -> chosen by symbol in __post_init__
     #: Fraction of equity risked per trade, per strategy. 0.10 was the
     #: aggressive-but-survivable setting in backtest (~15% max drawdown).
     risk_per_trade: float = 0.10
@@ -61,6 +78,10 @@ class BotConfig:
     magic: int = 20260829
     allow_live: bool = False
     log_path: str = "mt5_trades.jsonl"
+
+    def __post_init__(self) -> None:
+        if not self.strategies:
+            self.strategies = tuple(strategies_for(self.symbol))
 
 
 @dataclass

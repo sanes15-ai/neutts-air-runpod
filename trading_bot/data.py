@@ -26,6 +26,10 @@ SYMBOLS = {
     "USDCHF": "CHF=X",
     "USDCAD": "CAD=X",
     "XAUUSD": "GC=F",
+    # Crypto trades 24/7 and trends far harder than FX, so it is worth testing
+    # separately rather than assuming FX-tuned strategies carry over.
+    "BTCUSD": "BTC-USD",
+    "ETHUSD": "ETH-USD",
 }
 
 #: Typical Exness-style round-trip cost per trade, in price units, by instrument.
@@ -38,6 +42,10 @@ SPREAD = {
     "USDCHF": 0.00016,
     "USDCAD": 0.00018,
     "XAUUSD": 0.35,
+    # Crypto CFD spreads are far wider than FX in relative terms, and widen
+    # sharply in the volatility these strategies are meant to trade.
+    "BTCUSD": 25.0,
+    "ETHUSD": 1.5,
 }
 
 
